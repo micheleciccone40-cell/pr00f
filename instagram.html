@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PR00F · collegamento</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0b0b0d; color: #f2f2f2; font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 520px; padding: 24px; text-align: center; }
+  h1 { font-size: 22px; margin: 0 0 8px; }
+  h1 span { color: #ff2f3d; }
+  p { color: #b9b9c0; margin: 8px 0; }
+  code { display: block; margin-top: 16px; padding: 12px; background: #1a1a1f; border-radius: 8px; word-break: break-all; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>PR00F · <span>collegamento</span></h1>
+  <p id="msg">Ti riporto sul tuo PC…</p>
+  <code id="raw" hidden></code>
+</main>
+<script>
+  // Pagina di ritorno OAuth: riceve ?code=&state= dalla piattaforma e li
+  // inoltra al server locale di PR00F, che fa lo scambio del token.
+  var q = new URLSearchParams(location.search);
+  var provider = location.pathname.indexOf("instagram") >= 0 ? "instagram" : "tiktok";
+  var msg = document.getElementById("msg");
+  if (q.get("error")) {
+    msg.textContent = "Collegamento annullato: " + (q.get("error_description") || q.get("error"));
+  } else if (q.get("code")) {
+    var target = "http://localhost:5678/oauth/" + provider + location.search;
+    var raw = document.getElementById("raw");
+    raw.textContent = target;
+    raw.hidden = false;
+    msg.textContent = "Ti riporto sul tuo PC. Se non succede niente, avvia AutoPost Studio e ricarica questa pagina.";
+    location.replace(target);
+  } else {
+    msg.textContent = "Nessun codice ricevuto. Questa pagina serve solo per il collegamento dei social.";
+  }
+</script>
+</body>
+</html>
